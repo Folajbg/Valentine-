@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine 💖</title>
+
+<style>
+body {
+  margin:0;
+  font-family: "Comic Sans MS", cursive;
+  background: linear-gradient(135deg,#ff9ec4,#ffd6e8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
+.container {
+  background:#fff;
+  padding:25px 20px 60px;
+  border-radius:20px;
+  width:90%;
+  max-width:350px;
+  text-align:center;
+  position:relative;
+}
+h1 { color:#ff4d88; }
+img { width:100%; border-radius:15px; margin:15px 0; }
+button {
+  padding:12px 25px;
+  font-size:16px;
+  border:none;
+  border-radius:25px;
+  cursor:pointer;
+  position:absolute;
+}
+#yesBtn { background:#ff4d88; color:#fff; left:22%; bottom:15px; }
+#noBtn { background:#ccc; right:22%; bottom:15px; }
+.heart { position:fixed; font-size:24px; animation:float 3s linear forwards; }
+@keyframes float { to { transform:translateY(-100vh); opacity:0; } }
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+  <source src="adore_you.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="box">
+  <h1>Will You Be My Valentine? 💖</h1>
+  <img src="love_photo.jpeg">
+  <button id="yesBtn">Yes 💘</button>
+  <button id="noBtn">No 🙈</button>
+</div>
+
+<script>
+const yes=document.getElementById("yesBtn");
+const no=document.getElementById("noBtn");
+const box=document.getElementById("box");
+const music=document.getElementById("music");
+
+yes.onclick=()=>{
+  music.play();
+  box.innerHTML="<h1>Yayyy!! 💕🥰</h1><p>I adore you forever 💖</p>";
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.bottom="0";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),3000);
+  },300);
+};
+
+no.onmouseover=()=>{
+  no.style.left=Math.random()*80+"%";
+  no.style.top=Math.random()*80+"%";
+};
+</script>
+
+</body>
+</html>
