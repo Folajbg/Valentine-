@@ -9,63 +9,93 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: sans-serif;
-    overflow-x: hidden;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-align: center;
+    background-color: #fff0f5; /* soft pink */
+    overflow: hidden; /* prevent scroll while sparkles fly */
   }
 
-  /* Fullscreen image */
-  .bg-image {
+  /* Cute image */
+  .valentine-img {
     width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    display: block;
+    max-width: 400px;
+    margin-top: 50px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
   }
 
-  /* Floating buttons container */
+  h1 {
+    margin-top: 20px;
+    color: #e91e63;
+    font-size: 2em;
+  }
+
   .buttons {
-    position: fixed;
-    bottom: 50px;
-    width: 100%;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     gap: 20px;
-    z-index: 9999;
+    position: relative;
+    z-index: 10; /* make sure buttons are on top */
   }
 
   button {
     font-size: 1.5em;
     padding: 15px 30px;
-    cursor: pointer;
+    border-radius: 15px;
     border: none;
-    border-radius: 10px;
-    background-color: #e91e63;
+    background: linear-gradient(45deg, #ff4081, #ff80ab);
     color: white;
+    cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    transition: transform 0.2s, left 0.2s, top 0.2s;
-    position: relative; /* Needed for movement */
+    transition: transform 0.2s;
   }
 
   button:active {
     transform: scale(0.95);
   }
 
-  #message {
+  /* Main sparkle "I ❤️ YOU" */
+  .sparkle {
     position: fixed;
-    bottom: 150px;
-    width: 100%;
-    text-align: center;
-    font-size: 1.5em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    font-size: 3em;
     color: #ff4081;
-    z-index: 9999;
-    padding: 0 20px;
+    animation: sparkle-bounce 2s ease-in-out forwards;
+    z-index: 999;
+  }
+
+  @keyframes sparkle-bounce {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    50% { transform: translate(-50%, -60%) scale(1.5); opacity: 1; }
+    70% { transform: translate(-50%, -55%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  /* Tiny sparkles floating randomly */
+  .tiny-sparkle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: gold;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: sparkle-float 2s ease-in-out infinite;
+  }
+
+  @keyframes sparkle-float {
+    0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
+    50% { transform: translateY(-30px) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
   }
 </style>
 </head>
 <body>
 
-<img src="YOUR_IMAGE_URL_HERE" alt="Valentine Image" class="bg-image">
-
-<div id="message"></div>
+<h1>My Nono, will you be my Valentine?</h1>
+<img src="YOUR_CUTE_IMAGE_URL_HERE" alt="Cute Valentine" class="valentine-img">
 
 <div class="buttons">
   <button id="yesBtn">YES</button>
@@ -75,32 +105,38 @@
 <script>
   const yesBtn = document.getElementById('yesBtn');
   const noBtn = document.getElementById('noBtn');
-  const message = document.getElementById('message');
 
-  // YES button click
   yesBtn.addEventListener('click', () => {
-    message.textContent = "💖 Yay! I knew it! You make my heart so happy! 💖";
+    // Main sparkle message
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.textContent = 'I ❤️ YOU';
+    document.body.appendChild(sparkle);
+
+    // Create multiple tiny sparkles
+    for(let i=0; i<30; i++) {
+      const tiny = document.createElement('div');
+      tiny.className = 'tiny-sparkle';
+      tiny.style.left = Math.random() * window.innerWidth + 'px';
+      tiny.style.top = Math.random() * window.innerHeight + 'px';
+      tiny.style.animationDelay = (Math.random() * 1) + 's';
+      tiny.style.width = 5 + Math.random()*10 + 'px';
+      tiny.style.height = tiny.style.width;
+      document.body.appendChild(tiny);
+
+      // Remove each tiny sparkle after 3 seconds
+      setTimeout(() => tiny.remove(), 3000);
+    }
+
+    // Remove main sparkle after 3 seconds
+    setTimeout(() => sparkle.remove(), 3000);
   });
 
-  // NO button click (if they actually catch it)
+  // NO button click - playful alert
   noBtn.addEventListener('click', () => {
-    message.textContent = "😜 Haha, almost! Say YES! 😏";
-  });
+    alert("😜 Come on, Nono! Say YES! 💖");
+    });
+</script>
 
-  // Make NO button run away on hover or touchstart
-  function moveButtonRandomly() {
-    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-    const randomX = Math.floor(Math.random() * maxX);
-    const randomY = Math.floor(Math.random() * maxY);
-    noBtn.style.left = randomX + 'px';
-    noBtn.style.top = randomY + 'px';
-  }
-
-  // Trigger when finger gets near (mobile-friendly)
-  noBtn.addEventListener('touchstart', moveButtonRandomly);
-  noBtn.addEventListener('mouseover', moveButtonRandomly);
-  </script>
-  
 </body>
 </html>
