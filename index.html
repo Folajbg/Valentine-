@@ -1,94 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Be My Valentine 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: sans-serif;
+    overflow-x: hidden;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Comic Sans MS", cursive;
-      background: linear-gradient(135deg, #ffd1dc, #ffe6f0);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
+  /* Fullscreen image */
+  .bg-image {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+  }
 
-    .container {
-      background: white;
-      padding: 25px 20px 40px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 350px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
+  /* Floating buttons container */
+  .buttons {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 9999;
+  }
 
-    h1 {
-      color: #e75480;
-      margin-bottom: 15px;
-    }
+  button {
+    font-size: 1.5em;
+    padding: 15px 30px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #e91e63;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s, left 0.2s, top 0.2s;
+    position: relative; /* Needed for movement */
+  }
 
-    img {
-      width: 100%;
-      border-radius: 15px;
-      margin-bottom: 20px;
-    }
+  button:active {
+    transform: scale(0.95);
+  }
 
-    .buttons {
-      margin-top: 15px;
-    }
-
-    button {
-      padding: 12px 22px;
-      margin: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 25px;
-      background-color: #ff7eb3;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #e75480;
-    }
-
-    #response {
-      margin-top: 20px;
-      font-size: 20px;
-      color: #e75480;
-    }
-  </style>
+  #message {
+    position: fixed;
+    bottom: 150px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    color: #ff4081;
+    z-index: 9999;
+    padding: 0 20px;
+  }
+</style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>Will You Be My Valentine? 💖</h1>
 
-    <img src="love_photo.jpeg" alt="Love Photo" />
+<img src="YOUR_IMAGE_URL_HERE" alt="Valentine Image" class="bg-image">
 
-    <div class="buttons">
-      <button onclick="sayYes()">YES 💕</button>
-      <button onclick="sayNo()">NO 😒</button>
-    </div>
+<div id="message"></div>
 
-    <p id="response"></p>
-  </div>
+<div class="buttons">
+  <button id="yesBtn">YES</button>
+  <button id="noBtn">NO</button>
+</div>
 
-  <script>
-    function sayYes() {
-      document.getElementById("response").innerHTML =
-        "YAYYY 🥰💖 I knew it!!! Happy Valentine’s Day my love 💕";
-    }
+<script>
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const message = document.getElementById('message');
 
-    function sayNo() {
-      document.getElementById("response").innerHTML =
-        "Ah ah 😭 try again… choose YES abeg 😌💘";
-      }
+  // YES button click
+  yesBtn.addEventListener('click', () => {
+    message.textContent = "💖 Yay! I knew it! You make my heart so happy! 💖";
+  });
+
+  // NO button click (if they actually catch it)
+  noBtn.addEventListener('click', () => {
+    message.textContent = "😜 Haha, almost! Say YES! 😏";
+  });
+
+  // Make NO button run away on hover or touchstart
+  function moveButtonRandomly() {
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+    noBtn.style.left = randomX + 'px';
+    noBtn.style.top = randomY + 'px';
+  }
+
+  // Trigger when finger gets near (mobile-friendly)
+  noBtn.addEventListener('touchstart', moveButtonRandomly);
+  noBtn.addEventListener('mouseover', moveButtonRandomly);
   </script>
+  
 </body>
 </html>
