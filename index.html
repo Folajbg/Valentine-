@@ -12,7 +12,7 @@
     font-family: 'Comic Sans MS', cursive, sans-serif;
     text-align: center;
     background-color: #fff0f5;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   h1 {
@@ -21,15 +21,8 @@
     font-size: 2em;
   }
 
-  .valentine-img {
-    width: 100%;
-    max-width: 400px; /* 4:5 ratio */
-    border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  }
-
   .buttons {
-    margin-top: 30px;
+    margin: 20px auto;
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -47,10 +40,19 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     transition: transform 0.2s;
+    position: relative;
   }
 
   button:active {
     transform: scale(0.95);
+  }
+
+  .valentine-img {
+    width: 100%;
+    max-width: 400px; /* 4:5 ratio */
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    margin: 20px auto;
   }
 
   #loveText {
@@ -73,17 +75,28 @@
     opacity: 0.9;
     box-shadow: 0 0 8px #00bfff, 0 0 12px #00bfff, 0 0 16px #00bfff;
   }
+
+  /* Mobile adjustments */
+  @media (max-width: 480px) {
+    .buttons {
+      margin-top: 10px;
+    }
+    .valentine-img {
+      margin-top: 10px;
+    }
+  }
 </style>
 </head>
 <body>
 
 <h1>My Nono, will you be my Valentine?</h1>
-<img src="IMG_1759.jpeg" alt="Cute Valentine" class="valentine-img">
 
 <div class="buttons">
   <button id="yesBtn">YES</button>
   <button id="noBtn">NO</button>
 </div>
+
+<img src="IMG_1759.jpeg" alt="Cute Valentine" class="valentine-img">
 
 <div id="loveText">I ❤️ YOU</div>
 
@@ -92,6 +105,7 @@
   const noBtn = document.getElementById('noBtn');
   const loveText = document.getElementById('loveText');
 
+  // Sparkling heart animation for YES
   function generateHeartPoints(size, centerX, centerY, numPoints) {
     const points = [];
     for(let i = 0; i < numPoints; i++) {
@@ -145,11 +159,22 @@
     }, 40);
   });
 
-  noBtn.addEventListener('click', () => {
-    alert("😜 Come on, Nono! Say YES! 💖");
-    });
+  // Playful dodging NO button
+  noBtn.addEventListener('mouseover', dodgeButton);
+  noBtn.addEventListener('touchstart', dodgeButton); // mobile tap
+
+  function dodgeButton() {
+    const container = document.querySelector('.buttons');
+    const containerWidth = container.offsetWidth;
+    const buttonWidth = noBtn.offsetWidth;
+
+    // Random left position for NO button within container
+    const maxLeft = containerWidth - buttonWidth - 10; // 10px padding
+    const randomLeft = Math.floor(Math.random() * maxLeft);
+    noBtn.style.position = 'relative';
+    noBtn.style.left = randomLeft + 'px';
+    }
 </script>
 
 </body>
 </html>
-    
