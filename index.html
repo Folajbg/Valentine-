@@ -61,10 +61,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 3em;
-    color: #ff4081;
+    color: red;
     opacity: 0;
     z-index: 999;
-    text-shadow: 0 0 20px #ff4081, 0 0 40px #ff80ab, 0 0 60px #ff80ab;
+    text-shadow: 0 0 20px red, 0 0 40px pink, 0 0 60px #ff80ab;
     transition: opacity 0.5s, transform 0.5s;
   }
 
@@ -73,7 +73,15 @@
     border-radius: 50%;
     pointer-events: none;
     opacity: 0.9;
-    box-shadow: 0 0 8px #00bfff, 0 0 12px #00bfff, 0 0 16px #00bfff;
+  }
+
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    clip-path: polygon(50% 0%, 61% 18%, 80% 20%, 68% 40%, 70% 60%, 50% 80%, 30% 60%, 32% 40%, 20% 20%, 39% 18%);
+    pointer-events: none;
   }
 
   /* Mobile adjustments */
@@ -98,82 +106,97 @@
 
 <img src="IMG_1759.jpeg" alt="Cute Valentine" class="valentine-img">
 
-<div id="loveText">I ❤️ YOU</div>
+<div id="loveText">I LOVE YOU❤️</div>
+
+<!-- Tiny pop sound -->
+<audio id="popSound" src="https://assets.mixkit.co/sfx/download/mixkit-quick-pop-arcade-game-239.wav"></audio>
 
 <script>
-  const yesBtn = document.getElementById('yesBtn');
-  const noBtn = document.getElementById('noBtn');
-  const loveText = document.getElementById('loveText');
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const loveText = document.getElementById('loveText');
+const popSound = document.getElementById('popSound');
 
-  // Sparkling heart animation for YES
-  function generateHeartPoints(size, centerX, centerY, numPoints) {
-    const points = [];
-    for(let i = 0; i < numPoints; i++) {
-      const t = (i / numPoints) * Math.PI * 2;
-      const x = size * 16 * Math.pow(Math.sin(t), 3);
-      const y = -size * (13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
-      points.push({x: x + centerX, y: y + centerY});
-    }
-    return points;
+// YES click - magical animation
+yesBtn.addEventListener('click', () => {
+  // Play sound once immediately
+  popSound.currentTime = 0;
+  popSound.play();
+
+  // Pulsing "I LOVE YOU❤️"
+  loveText.style.opacity = 1;
+  loveText.style.transform = 'translate(-50%, -50%) scale(1.3)';
+  setTimeout(() => loveText.style.transform = 'translate(-50%, -50%) scale(1)', 600);
+
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  // Multi-layered red sparkle explosion
+  for(let i=0;i<200;i++){
+    const sparkle = document.createElement('div');
+    sparkle.className='sparkle';
+    const size = Math.random()*8+4;
+    sparkle.style.width = size+'px';
+    sparkle.style.height = size+'px';
+    sparkle.style.background = ['red','#ff4d4d','#ff8080'][Math.floor(Math.random()*3)];
+    sparkle.style.left = centerX+'px';
+    sparkle.style.top = centerY+'px';
+    document.body.appendChild(sparkle);
+
+    const angle = Math.random()*2*Math.PI;
+    const distance = Math.random()*200+50;
+
+    sparkle.animate([
+      {transform: `translate(0,0) scale(0.5)`, opacity:1},
+      {transform: `translate(${distance*Math.cos(angle)}px, ${distance*Math.sin(angle)}px) scale(1.2)`, opacity:0}
+    ], {duration: 2500 + Math.random()*500, easing:'ease-out'});
+
+    setTimeout(() => {
+      sparkle.remove();
+      // tiny pop for each sparkle (slightly randomized)
+      const tempSound = popSound.cloneNode();
+      tempSound.volume = 0.2 + Math.random()*0.3;
+      tempSound.play();
+    },3000);
   }
 
-  yesBtn.addEventListener('click', () => {
-    // Show "I ❤️ YOU"
-    loveText.style.opacity = 1;
-    loveText.style.transform = 'translate(-50%, -50%) scale(1.3)';
-    setTimeout(() => loveText.style.transform = 'translate(-50%, -50%) scale(1)', 600);
+  // Floating hearts from YES button
+  const rect = yesBtn.getBoundingClientRect();
+  for(let i=0;i<15;i++){
+    const heart = document.createElement('div');
+    heart.className='heart';
+    heart.style.left = rect.left + rect.width/2 + (Math.random()*40-20) + 'px';
+    heart.style.top = rect.top + 'px';
+    document.body.appendChild(heart);
 
-    // Sparkling heart animation
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const heartPoints = generateHeartPoints(10, centerX, centerY, 200);
+    heart.animate([
+      {transform: 'translateY(0) rotate(0deg)', opacity:1},
+      {transform: `translateY(-${100+Math.random()*80}px) rotate(${Math.random()*360}deg)`, opacity:0}
+    ], {duration:2000 + Math.random()*1000, easing:'ease-out'});
 
-    let count = 0;
-    const interval = setInterval(() => {
-      if(count > 200) { clearInterval(interval); return; }
+    setTimeout(() => {
+      heart.remove();
+      // tiny pop for each heart
+      const tempSound = popSound.cloneNode();
+      tempSound.volume = 0.3 + Math.random()*0.3;
+      tempSound.play();
+    },3000);
+  }
+});
 
-      for(let i = 0; i < 8; i++){
-        const idx = (count + i) % heartPoints.length;
-        const point = heartPoints[idx];
+// Playful dodging NO button
+noBtn.addEventListener('mouseover', dodgeButton);
+noBtn.addEventListener('touchstart', dodgeButton);
 
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        sparkle.style.left = point.x + (Math.random()*40-20) + 'px';
-        sparkle.style.top = point.y + (Math.random()*40-20) + 'px';
-        const size = 6 + Math.random()*6;
-        sparkle.style.width = size + 'px';
-        sparkle.style.height = size + 'px';
-        sparkle.style.background = '#00bfff';
-
-        document.body.appendChild(sparkle);
-
-        sparkle.animate([
-          { transform: `translate(0,0) scale(0.5)`, opacity: 0.6 },
-          { transform: `translate(${(Math.random()*60-30)}px, ${(Math.random()*-80)}px) scale(1.2)`, opacity: 0 }
-        ], { duration: 2500, easing: 'ease-out' });
-
-        setTimeout(() => sparkle.remove(), 2500);
-      }
-
-      count++;
-    }, 40);
-  });
-
-  // Playful dodging NO button
-  noBtn.addEventListener('mouseover', dodgeButton);
-  noBtn.addEventListener('touchstart', dodgeButton); // mobile tap
-
-  function dodgeButton() {
-    const container = document.querySelector('.buttons');
-    const containerWidth = container.offsetWidth;
-    const buttonWidth = noBtn.offsetWidth;
-
-    // Random left position for NO button within container
-    const maxLeft = containerWidth - buttonWidth - 10; // 10px padding
-    const randomLeft = Math.floor(Math.random() * maxLeft);
-    noBtn.style.position = 'relative';
-    noBtn.style.left = randomLeft + 'px';
-    }
+function dodgeButton() {
+  const container = document.querySelector('.buttons');
+  const containerWidth = container.offsetWidth;
+  const buttonWidth = noBtn.offsetWidth;
+  const maxLeft = containerWidth - buttonWidth - 10;
+  const randomLeft = Math.floor(Math.random() * maxLeft);
+  noBtn.style.position = 'relative';
+  noBtn.style.left = randomLeft + 'px';
+  }
 </script>
 
 </body>
